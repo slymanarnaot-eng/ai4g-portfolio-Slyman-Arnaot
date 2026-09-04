@@ -2,9 +2,9 @@
 
 > **This is your portfolio.** Everything you build, hand in and learn during the minor lives here.
 
-- **Name:** Bob
-- **Student number:** _your student number here_
-- **Cohort / year:** _e.g. 2026-2027_
+- **Name:** Slyman Arnaot
+- **Student number:** 23178671
+- **Cohort / year:** AI for Good MBLOK1_SEM1 2026-2027
 
 ---
 
