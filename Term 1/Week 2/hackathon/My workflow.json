@@ -1,0 +1,358 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "39de2373-ab18-43d7-947d-3d201cd9e770",
+        "options": {}
+      },
+      "id": "b067ba10-7dce-4999-9ff8-6e9f8322ec74",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        320,
+        0
+      ],
+      "webhookId": "39de2373-ab18-43d7-947d-3d201cd9e770"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3522e60f-7711-454a-bfdf-5f95f95ff635",
+              "name": "=patient_id",
+              "value": "={{ $json.body.patient_id }}",
+              "type": "string"
+            },
+            {
+              "id": "85a8ebb4-4d30-4c9f-85af-30bbe248893e",
+              "name": "=glucose",
+              "value": "={{ $json.body.glucose }}",
+              "type": "string"
+            },
+            {
+              "id": "3bc20b66-a496-44ce-bfce-0e5b63b3f6e8",
+              "name": "=heart_rate",
+              "value": "={{ $json.body.heart_rate }}",
+              "type": "string"
+            },
+            {
+              "id": "9a0afe17-3b41-4828-a7a3-9c48e2e28858",
+              "name": "=symptom",
+              "value": "={{ $json.body.symptom }}",
+              "type": "string"
+            },
+            {
+              "id": "e84a3ffb-678b-4858-aae8-f23cf6a0722d",
+              "name": "=activity",
+              "value": "={{ $json.body.activity }}",
+              "type": "string"
+            },
+            {
+              "id": "1359072f-ddeb-4b94-ac85-c5b779e207fb",
+              "name": "timestamp",
+              "value": "={{ $json.body.timestamp }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b0803e1c-8bb0-4451-ae5e-9378014eee96",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        464,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-3-flash-preview",
+          "mode": "id"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are a diabetes monitoring assistant.\n\nAnalyze the patient's glucose level, symptoms, and physical activity.\n\nPatient data:\n- Glucose: {{ $json.glucose }} mg/dL\n- Symptom: {{ $json.symptom }}\n- Activity: {{ $json.activity }}\n\nClassify the patient's health status into exactly ONE category:\n\nSTABLE\nWARNING\nURGENT\n\nUse these rules:\n\nSTABLE:\n- Glucose is below 180 mg/dL\n- No concerning symptoms\n\nWARNING:\n- Glucose is between 180 and 250 mg/dL\n- OR mild symptoms are present\n- There is no clear sign of an immediate emergency\n\nURGENT:\n- Glucose is below 70 mg/dL\n- OR glucose is above 250 mg/dL (regardless of symptoms)\n- OR severe symptoms indicate a possible medical emergency\n\nIMPORTANT:\nYour response MUST contain ONLY ONE word.\n\nThe only allowed outputs are:\n\nSTABLE\nWARNING\nURGENT\n\nDo not provide an explanation.\nDo not provide a recommendation.\nDo not provide punctuation.\nDo not provide any other text."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "id": "57153e63-98c0-4db5-9a19-3be2419f3f03",
+      "name": "Message a model",
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        592,
+        0
+      ],
+      "credentials": {
+        "googlePalmApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "972eaf30-bb40-4e49-9e55-7f50079033db",
+              "name": "Status",
+              "value": "={{ $json.content.parts[0].text.trim() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "67e75f90-5d92-4ddd-a450-84d6d886dac8",
+      "name": "Edit Fields1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        848,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "3fd3bcf5-ec4a-4e5a-bbf0-e622af74ae8d",
+              "leftValue": "={{ $json.Status }}",
+              "rightValue": "=URGENT",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "71b572c1-6dac-4dd7-b079-8ff1e1e39ab8",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        976,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "7551350783",
+        "text": "🚨 Your health status is urgent.",
+        "additionalFields": {}
+      },
+      "id": "3ee6b289-1bfa-46ca-98f4-d731eacba767",
+      "name": "Send a text message",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1168,
+        -48
+      ],
+      "webhookId": "998d8a58-7323-4d76-ba60-cbd73512cff7",
+      "credentials": {
+        "telegramApi": {
+          "id": "5ze7i1ZBWuRAfO9E",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "e0c75c91-3f50-4caf-ae70-4e6609cd169c",
+              "leftValue": "={{ $json.Status }}",
+              "rightValue": "WARNING",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "db1dcccf-3311-4dfc-88ea-35af2c67bfce",
+      "name": "If1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1120,
+        176
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "7551350783",
+        "text": "🟡 Your health status requires attention. Please monitor your glucose and symptoms.",
+        "additionalFields": {}
+      },
+      "id": "836b6fb3-efb1-4289-8e19-aaea445218f8",
+      "name": "Send a text message2",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1328,
+        32
+      ],
+      "webhookId": "17662082-9d8e-42b8-baff-bc47c2576e16",
+      "credentials": {
+        "telegramApi": {
+          "id": "5ze7i1ZBWuRAfO9E",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "7551350783",
+        "text": "🟢 Your health status is stable.",
+        "additionalFields": {}
+      },
+      "id": "6296ecfc-44ad-485e-a03f-a371f70e1a6c",
+      "name": "Send a text message1",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1312,
+        288
+      ],
+      "webhookId": "e7002cc4-4c64-4f57-a23a-c15c60968da2",
+      "credentials": {
+        "telegramApi": {
+          "id": "5ze7i1ZBWuRAfO9E",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a text message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "6342a517-4b06-4cae-b872-6db246b108e7",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e2709a39ce1b9fcbc1598672cd7e0cc8d3f078c0311490f0ef407104951c19e2"
+  },
+  "nodeGroups": [],
+  "id": "JiNPTdTtny1ovd3G",
+  "tags": []
+}
