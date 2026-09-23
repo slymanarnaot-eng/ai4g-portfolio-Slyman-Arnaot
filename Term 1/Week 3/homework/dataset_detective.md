@@ -16,9 +16,9 @@ The data is available for Amsterdam, districts and neighbourhoods.
 
 ## What is missing?
 
-The dataset does not contain every type of information about people.
+The dataset does not show every type of information about people.
 
-For example, it does not include:
+For example, I did not find variables for:
 - Education level
 - Income
 - Employment
