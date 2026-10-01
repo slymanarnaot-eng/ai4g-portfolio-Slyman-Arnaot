@@ -5,6 +5,8 @@
 ## 1. Homework & workshop assignments -> [`homework/`](homework/)
 
 **What was the assignment?**
+The main assignment for Week 4 was the Community Feedback Analyzer. We worked with text in Python, including basic string methods like strip(), lower(), split(), and replace(). We also learned how to count words, remove common stopwords, and read and write text files using with open().
+In the end, we put everything together into a small Python program that analyzed the feedback and created a feedback_report.txt file with the results. We also reflected on the limitations of text-based feedback and how some people’s voices can be missing from the data.
 
 **What did I hand in?**
 _List the files, or link to them. Notebook exports, screenshots, scripts._
@@ -38,7 +40,7 @@ _Name a real, specific user. "Everyone" is not a user._
 _Two or three sentences. What can a user actually do with it?_
 
 **Link to the live thing (if any):**
-_Deployed URL, workflow export, video demo - whatever proves it works._
+https://www.youtube.com/watch?v=pmWtrWT7KSM
 
 **How do I run it?**
 _Short instructions so someone else can start it._
