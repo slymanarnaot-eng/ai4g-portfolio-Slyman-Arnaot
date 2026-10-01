@@ -1,0 +1,24 @@
+==========================================
+       COMMUNITY FEEDBACK REPORT          
+==========================================
+
+Total Responses Analyzed: 5
+Average Words per Response: 7.00
+
+Top 5 Keywords (excluding stopwords):
+  - alert: 2 times
+  - bike: 1 times
+  - lanes: 1 times
+  - great: 1 times
+  - broken: 1 times
+
+Urgent Responses Detected (3):
+  - ALERT: "ALERT broken glass on the path near the school"
+  - ALERT: "More lights please it is too dark at night"
+  - ALERT: "ALERT the crossing feels unsafe for children"
+
+Sentiment Breakdown:
+  - Positive Words: 3
+  - Negative Words: 3
+
+==========================================
