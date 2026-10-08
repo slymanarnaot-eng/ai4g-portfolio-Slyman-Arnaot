@@ -89,7 +89,9 @@ Because incorrect healthcare information can cause harm, Healthcare Easy treats 
 - [x] Proof of the live demo is in `presentation/` (recording, screenshots, or link)
 
 **How did it go? What would I do differently next time?**
+
 The live demo showed the main flow: selecting the languages, entering a healthcare message, and receiving a structured explanation. It also showed that the prototype goes beyond translation by explaining the message, identifying actions, highlighting important information, and pointing out unclear details. Next time, I would keep the introduction shorter and focus more on the actual user experience.
+
 ---
 
 ## 4. Reflection
